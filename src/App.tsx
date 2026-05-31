@@ -85,7 +85,7 @@ export default function App() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-5 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-[320px] p-6 animate-in zoom-in-95 duration-200">
               <h3 className="text-xl font-bold text-slate-800 mb-2">Keluar Aplikasi?</h3>
-              <p className="text-slate-500 mb-6 font-medium text-sm leading-relaxed">Apakah Anda yakin ingin keluar dari Siap Berangkat?</p>
+              <p className="text-slate-500 mb-6 font-medium text-sm leading-relaxed">Apakah Anda yakin ingin keluar dari Checklist Berangkat?</p>
               <div className="flex gap-3">
                 <button 
                   onClick={() => setShowExitConfirm(false)}

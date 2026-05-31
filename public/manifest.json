@@ -1,5 +1,5 @@
 {
-  "name": "Siap Berangkat",
+    "name": "Checklist Berangkat",
   "short_name": "Berangkat",
   "start_url": ".",
   "display": "standalone",

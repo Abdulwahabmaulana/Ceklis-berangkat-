@@ -73,7 +73,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       {/* Header */}
       <div className="bg-emerald-600 text-white px-5 pt-10 pb-5 shadow-sm sticky top-0 z-10 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Siap Berangkat</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Checklist Berangkat</h1>
           <p className="text-emerald-100 text-sm mt-0.5">Kelola Bawaan & Jadwal</p>
         </div>
         <div className="flex items-center gap-3">

@@ -4,6 +4,8 @@ import { generateId, formatDate, isToday, cn } from '../lib/utils';
 import { BottomSheet } from '../components/BottomSheet';
 import { ArrowLeft, Clock, Calendar, CheckSquare, Plus, Share2, MoreVertical, Flame, Check, Trash2, LayoutList, Search } from 'lucide-react';
 import { AppScreen, ChecklistItem, Schedule, FrequentGroup } from '../types';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface TripDetailProps {
   tripId: string;
@@ -112,22 +114,64 @@ export function TripDetail({ tripId, onNavigate }: TripDetailProps) {
   };
 
   const handleShareChecklist = () => {
-    const textBuilder = [`Daftar Bawaan: *${trip.title}* (${formatDate(trip.date)})`, ''];
-    sortedItems.forEach(i => {
-      textBuilder.push(`[${i.completed ? 'X' : ' '}] ${i.text}${i.urgent ? ' ❗' : ''}`);
+    const doc = new jsPDF();
+    doc.setFont("helvetica");
+
+    // Title
+    doc.setFontSize(22);
+    doc.setTextColor(16, 185, 129); // emerald-500
+    doc.text("Checklist Berangkat", 14, 22);
+
+    // Trip Info
+    doc.setFontSize(14);
+    doc.setTextColor(51, 65, 85); // slate-700
+    doc.text(`Perjalanan: ${trip.title}`, 14, 32);
+    doc.setFontSize(11);
+    doc.setTextColor(100, 116, 139); // slate-500
+    doc.text(`Tanggal: ${formatDate(trip.date)}`, 14, 38);
+
+    // Prepare table data
+    const tableData = sortedItems.map(i => [
+      i.completed ? 'Sudah' : 'Belum',
+      i.text + (i.urgent ? ' (Penting!)' : '')
+    ]);
+
+    autoTable(doc, {
+      startY: 45,
+      head: [['Status', 'Barang Bawaan']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [16, 185, 129], textColor: 255 },
+      styles: { fontSize: 11, cellPadding: 5 },
+      columnStyles: {
+        0: { cellWidth: 25, halign: 'center' },
+        1: { cellWidth: 'auto' }
+      }
     });
-    
-    if (navigator.share) {
-      navigator.share({
-        title: `Bawaan: ${trip.title}`,
-        text: textBuilder.join('\n')
-      }).catch(err => {
-        if (err.name !== 'AbortError' && err.message !== 'Share canceled') {
-          console.error('Error sharing:', err);
-        }
-      });
-    } else {
-      alert("Fitur share tidak didukung di browser ini. Tetapi Anda dapat mengcopynya secara manual:\n\n" + textBuilder.join('\n'));
+
+    const fileName = `Checklist_${trip.title.replace(/\s+/g, '_')}.pdf`;
+
+    try {
+      const pdfBlob = doc.output('blob');
+      const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+      
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: `Bawaan: ${trip.title}`,
+          text: 'Berikut adalah checklist perjalanan saya dari aplikasi Checklist Berangkat.'
+        }).catch(err => {
+          if (err.name !== 'AbortError' && err.message !== 'Share canceled') {
+            doc.save(fileName);
+          }
+        });
+      } else {
+        // Fallback: download the file
+        doc.save(fileName);
+      }
+    } catch (err) {
+      console.error('Error generating/sharing PDF:', err);
+      doc.save(fileName);
     }
   };
 

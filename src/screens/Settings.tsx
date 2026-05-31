@@ -67,7 +67,7 @@ export function Settings({ onNavigate }: { onNavigate: (screen: AppScreen) => vo
               </div>
               <div>
                 <h3 className="font-medium text-slate-800">Install Aplikasi (PWA)</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Tambahkan ke layar utama HP (Fitur Offline Penuh)</p>
+                <p className="text-xs text-slate-500 mt-0.5">Tambahkan ke layar utama HP untuk akses mudah</p>
               </div>
             </button>
           </div>
