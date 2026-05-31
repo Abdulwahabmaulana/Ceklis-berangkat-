@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAppStore } from '../store/AppContext';
 import { generateId, formatDate, isToday, cn } from '../lib/utils';
 import { BottomSheet } from '../components/BottomSheet';
@@ -15,9 +15,14 @@ export function TripDetail({ tripId, onNavigate }: TripDetailProps) {
   const trip = trips.find(t => t.id === tripId);
   const [activeTab, setActiveTab] = useState<'checklist' | 'schedule'>('checklist');
 
-  // If trip is missing (e.g. deleted), go back
+  // If trip is missing (e.g. deleted), go back safely
+  useEffect(() => {
+    if (!trip) {
+      onNavigate('dashboard');
+    }
+  }, [trip, onNavigate]);
+
   if (!trip) {
-    onNavigate('dashboard');
     return null;
   }
 
